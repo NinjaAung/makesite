@@ -5,6 +5,8 @@
   <title>Untitled Custom SSG</title>  
 </head>
 <body>
-{{ . }}
+{{range .}}
+    {{.Content}}
+{{end}}
 </body>
 </html>

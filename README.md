@@ -69,12 +69,12 @@ If you get stuck on any step, be sure to print the output to `stdout`!
 
 #### v1.1 Requirements
 
-- [ ] Create 3 new `.txt` files for testing in the same directory as your project.
-- [ ] Add a new flag to the `makesite` command named `dir`.
-- [ ] Use the flag to find all `.txt` files in the given directory. Print them to `stdout`.
-- [ ] With the list of `.txt` files you found, generate an HTML page for each.
-- [ ] Run `./makesite --dir=.` to test in your local directory.
-- [ ] **Add, commit, and push to GitHub**.
+- [x] Create 3 new `.txt` files for testing in the same directory as your project.
+- [x] Add a new flag to the `makesite` command named `dir`.
+- [x] Use the flag to find all `.txt` files in the given directory. Print them to `stdout`.
+- [x] With the list of `.txt` files you found, generate an HTML page for each.
+- [x] Run `./makesite --dir=.` to test in your local directory.
+- [x] **Add, commit, and push to GitHub**.
 
 #### v1.1 Stretch Challenges
 
@@ -88,12 +88,12 @@ If you get stuck on any step, be sure to print the output to `stdout`!
 
 #### v1.2 Requirements
 
-- [ ] Initialize Go modules in your project.
-- [ ] Add any third party library to your project to enhance it's functionality. Some ideas you might consider include **_(CHOOSE ONLY ONE)_**:
-    - [ ] Translating page content using Google Translate.
+- [x] Initialize Go modules in your project.
+- [x] Add any third party library to your project to enhance it's functionality. Some ideas you might consider include **_(CHOOSE ONLY ONE)_**:
+    - [x] Translating page content using Google Translate.
     - [ ] Parse Markdown (`.md`) files and transform them into HTML. `#` through `######` should translate to `<h1>` through `<h6>` elements.
     - [ ] **_FILL IN THE BLANK_**: `I will use the __________________________________ library. The documentation is located at __________________________________. My goal is to use it to __________________________________.`
-- [ ] **Add, commit, and push to GitHub**.
+- [x]**Add, commit, and push to GitHub**.
 
 ## Resources
 

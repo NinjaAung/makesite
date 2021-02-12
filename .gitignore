@@ -28,3 +28,6 @@
 # Binaries
 makesite
 solution.go
+
+test.go
+test
