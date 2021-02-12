@@ -1,12 +1,12 @@
 package main
 
 import (
-	"fmt"
 	"flag"
-	"io/ioutil"
-	"path"
-	"os"
+	"fmt"
 	"html/template"
+	"io/ioutil"
+	"os"
+	"path"
 )
 
 type Post struct {
@@ -16,12 +16,12 @@ type Post struct {
 func main() {
 	fmt.Println("Starting")
 	// Vars
-	var filePaths []string 
+	var filePaths []string
 	var posts []Post
 
 	// Flags
-	filePath := flag.String("file","","Path to html file")
-	dirPath  := flag.String("dir","","Path to dir containinf html files")
+	filePath := flag.String("file", "", "Path to html file")
+	dirPath := flag.String("dir", "", "Path to dir containinf html files")
 	flag.Parse()
 
 	if len(*dirPath) > 0 && len(*filePath) > 0 {
@@ -36,24 +36,22 @@ func main() {
 	if *dirPath != "" {
 		files, _ := ioutil.ReadDir(*dirPath)
 		for _, file := range files {
-			filePaths = append(filePaths,path.Join(*dirPath,file.Name()))
+			filePaths = append(filePaths, path.Join(*dirPath, file.Name()))
 		}
 	}
-	
+
 	for _, filePath := range filePaths {
 		content, _ := ioutil.ReadFile(filePath)
 		posts = append(posts, Post{string(content)})
 	}
 
-
 	f, _ := os.Create("first-post.html")
-	t := template.Must(template.New("POSTS").ParseFiles("template.tmpl"))
-	
+	t := template.Must(template.New("template.tmpl").ParseFiles("template.tmpl"))
+
 	err := t.Execute(f, posts)
 	if err != nil {
 		panic(err)
 	}
-	
 
 }
 
