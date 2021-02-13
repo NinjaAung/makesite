@@ -8,6 +8,7 @@ import (
 	"os"
 	"path"
 	"strings"
+	"time"
 )
 
 //Post ...
@@ -17,9 +18,14 @@ type Post struct {
 }
 
 func main() {
-	fmt.Println("Starting")
+	start := time.Now()
+	// Colour
+	var Green = "\x1B[32m"
+	var NC = "\x1b[0m"
+
 	// Vars
 	var filePaths []string
+	var totalSize int64 = 0
 
 	// Flags
 	filePath := flag.String("file", "", "Path to html file")
@@ -45,6 +51,10 @@ func main() {
 
 	for _, filePath := range filePaths {
 
+		fileStat, _ := os.Stat(filePath)
+		fileSize := fileStat.Size()
+		totalSize += fileSize
+
 		filePathSplit := strings.Split(filePath, "/")
 		fileName := strings.Split(filePathSplit[len(filePathSplit)-1], ".")[0]
 
@@ -54,7 +64,10 @@ func main() {
 
 		createFileFromTemplate(fileName+".html", Post{fileSplit[0], content})
 	}
+	elapsed := time.Since(start)
 
+	fmt.Printf(Green+"Success! "+NC+"Generated %d pages (%.2fkb total) in %.3f seconds\n",
+		len(filePaths), float64(totalSize)*float64(0.001), elapsed.Seconds())
 }
 
 func createFileFromTemplate(name string, post Post) {
