@@ -7,9 +7,12 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
+	"strings"
 )
 
+//Post ...
 type Post struct {
+	Title   string
 	Content string
 }
 
@@ -41,8 +44,10 @@ func main() {
 	}
 
 	for _, filePath := range filePaths {
-		content, _ := ioutil.ReadFile(filePath)
-		posts = append(posts, Post{string(content)})
+		file, _ := ioutil.ReadFile(filePath)
+		fileSplit := strings.Split(string(file), "\n")
+		content := strings.Join(fileSplit[1:], "\n")
+		posts = append(posts, Post{fileSplit[0], content})
 	}
 
 	f, _ := os.Create("first-post.html")
@@ -54,13 +59,3 @@ func main() {
 	}
 
 }
-
-// func createSite() {
-// 	t := template.Must(template.New("template.tmpl").ParseFiles("template.tmpl"))
-// 	firstPost, err := ioutil.ReadFile(string(*filePath))
-// 	err = t.Execute(f, string(firstPost))
-// 	if err != nil {
-// 		panic(err)
-// 	}
-
-// }

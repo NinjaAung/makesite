@@ -90,8 +90,8 @@ If you get stuck on any step, be sure to print the output to `stdout`!
 
 - [x] Initialize Go modules in your project.
 - [x] Add any third party library to your project to enhance it's functionality. Some ideas you might consider include **_(CHOOSE ONLY ONE)_**:
-    - [x] Translating page content using Google Translate.
-    - [ ] Parse Markdown (`.md`) files and transform them into HTML. `#` through `######` should translate to `<h1>` through `<h6>` elements.
+    - [] Translating page content using Google Translate.
+    - [x] Parse Markdown (`.md`) files and transform them into HTML. `#` through `######` should translate to `<h1>` through `<h6>` elements.
     - [ ] **_FILL IN THE BLANK_**: `I will use the __________________________________ library. The documentation is located at __________________________________. My goal is to use it to __________________________________.`
 - [x]**Add, commit, and push to GitHub**.
 
