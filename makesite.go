@@ -20,13 +20,13 @@ func main() {
 	fmt.Println("Starting")
 	// Vars
 	var filePaths []string
-	var posts []Post
 
 	// Flags
 	filePath := flag.String("file", "", "Path to html file")
-	dirPath := flag.String("dir", "", "Path to dir containinf html files")
+	dirPath := flag.String("dir", "", "Path to dir containing html files")
 	flag.Parse()
 
+	// Panic when both or none of flags are filled
 	if len(*dirPath) > 0 && len(*filePath) > 0 {
 		panic("Can't have both dir and file")
 	} else if len(*dirPath) == 0 && len(*filePath) == 0 {
@@ -44,18 +44,25 @@ func main() {
 	}
 
 	for _, filePath := range filePaths {
+
+		filePathSplit := strings.Split(filePath, "/")
+		fileName := strings.Split(filePathSplit[len(filePathSplit)-1], ".")[0]
+
 		file, _ := ioutil.ReadFile(filePath)
 		fileSplit := strings.Split(string(file), "\n")
 		content := strings.Join(fileSplit[1:], "\n")
-		posts = append(posts, Post{fileSplit[0], content})
+
+		createFileFromTemplate(fileName+".html", Post{fileSplit[0], content})
 	}
 
-	f, _ := os.Create("first-post.html")
-	t := template.Must(template.New("template.tmpl").ParseFiles("template.tmpl"))
+}
 
-	err := t.Execute(f, posts)
+func createFileFromTemplate(name string, post Post) {
+	f, _ := os.Create(name)
+	t := template.Must(template.New("template.tmpl").ParseFiles("template.tmpl"))
+	fmt.Println("Creating ", name)
+	err := t.Execute(f, post)
 	if err != nil {
 		panic(err)
 	}
-
 }
