@@ -21,6 +21,7 @@ func main() {
 	start := time.Now()
 	// Colour
 	var Green = "\x1B[32m"
+	var Bold = "\x1b[1m"
 	var NC = "\x1b[0m"
 
 	// Vars
@@ -63,7 +64,7 @@ func main() {
 	}
 	elapsed := time.Since(start)
 
-	fmt.Printf(Green+"Success! "+NC+"Generated %d pages (%.2fkb total) in %.2f seconds\n",
+	fmt.Printf(Green+Bold+"Success! "+NC+"Generated "+Bold+"%d "+NC+"pages (%.2fkb total) in %.2f seconds\n",
 		len(filePaths), float64(totalSize)*float64(0.001), elapsed.Seconds())
 }
 
