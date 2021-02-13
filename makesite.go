@@ -18,7 +18,6 @@ type Post struct {
 }
 
 func main() {
-	start := time.Now()
 	// Colour
 	var Green = "\x1B[32m"
 	var Bold = "\x1b[1m"
@@ -47,20 +46,22 @@ func main() {
 		filePaths = findFilesInFolder(*dirPath)
 	}
 
+	start := time.Now()
 	for _, filePath := range filePaths {
 
 		fileStat, _ := os.Stat(filePath)
-		fileSize := fileStat.Size()
-		totalSize += fileSize
+		totalSize += fileStat.Size()
 
-		filePathSplit := strings.Split(filePath, "/")
-		fileName := strings.Split(filePathSplit[len(filePathSplit)-1], ".")[0]
+		fileName := strings.Split(
+			strings.Split(filePath, "/")[len(strings.Split(filePath, "/"))-1], ".")[0]
 
 		file, _ := ioutil.ReadFile(filePath)
 		fileSplit := strings.Split(string(file), "\n")
+
+		title := fileSplit[0]
 		content := strings.Join(fileSplit[1:], "\n")
 
-		createFileFromTemplate(fileName+".html", Post{fileSplit[0], content})
+		createFileFromTemplate(fileName+".html", Post{title, content})
 	}
 	elapsed := time.Since(start)
 
@@ -71,7 +72,6 @@ func main() {
 func createFileFromTemplate(name string, post Post) {
 	f, _ := os.Create(name)
 	t := template.Must(template.New("template.tmpl").ParseFiles("template.tmpl"))
-	fmt.Println("Creating ", name)
 	err := t.Execute(f, post)
 	if err != nil {
 		panic(err)
