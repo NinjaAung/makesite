@@ -32,21 +32,18 @@ func main() {
 	dirPath := flag.String("dir", "", "Path to dir containing html files")
 	flag.Parse()
 
-	// Panic when both or none of flags are filled
-	if len(*dirPath) > 0 && len(*filePath) > 0 {
-		panic("Can't have both dir and file")
-	} else if len(*dirPath) == 0 && len(*filePath) == 0 {
-		panic("dir and file can't both be empty")
-	}
+	// Checks Values Of Flags
+	isDirAndFilePathEmpty := len(*dirPath) == 0 && len(*filePath) == 0
+	isDirAndFilePathFilled := len(*dirPath) > 0 && len(*filePath) > 0
 
-	if *filePath != "" {
+	if isDirAndFilePathFilled {
+		panic("Can't have both dir and file")
+	} else if isDirAndFilePathEmpty {
+		panic("dir and file can't both be empty")
+	} else if *filePath != "" {
 		filePaths = append(filePaths, *filePath)
-	}
-	if *dirPath != "" {
-		files, _ := ioutil.ReadDir(*dirPath)
-		for _, file := range files {
-			filePaths = append(filePaths, path.Join(*dirPath, file.Name()))
-		}
+	} else if *dirPath != "" {
+		filePaths = findFilesInFolder(*dirPath)
 	}
 
 	for _, filePath := range filePaths {
@@ -66,7 +63,7 @@ func main() {
 	}
 	elapsed := time.Since(start)
 
-	fmt.Printf(Green+"Success! "+NC+"Generated %d pages (%.2fkb total) in %.3f seconds\n",
+	fmt.Printf(Green+"Success! "+NC+"Generated %d pages (%.2fkb total) in %.2f seconds\n",
 		len(filePaths), float64(totalSize)*float64(0.001), elapsed.Seconds())
 }
 
@@ -78,4 +75,22 @@ func createFileFromTemplate(name string, post Post) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func findFilesInFolder(dirPath string) []string {
+	var filePaths []string
+	filePath, err := ioutil.ReadDir(dirPath)
+	if err != nil {
+		panic(err)
+	}
+	for _, file := range filePath {
+		if file.IsDir() {
+			subFolderPath := findFilesInFolder(path.Join(dirPath, file.Name()))
+			filePaths = append(filePaths, subFolderPath...)
+			continue
+		}
+		filePaths = append(filePaths, path.Join(dirPath, file.Name()))
+	}
+	return filePaths
+
 }
