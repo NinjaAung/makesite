@@ -3,12 +3,14 @@ package main
 import (
 	"flag"
 	"fmt"
-	"html/template"
 	"io/ioutil"
 	"os"
 	"path"
 	"strings"
 	"time"
+
+	"github.com/microcosm-cc/bluemonday"
+	"github.com/russross/blackfriday/v2"
 )
 
 //Post ...
@@ -16,6 +18,8 @@ type Post struct {
 	Title   string
 	Content string
 }
+
+var totalSize int64 = 0
 
 func main() {
 	// Colour
@@ -25,11 +29,10 @@ func main() {
 
 	// Vars
 	var filePaths []string
-	var totalSize int64 = 0
 
 	// Flags
-	filePath := flag.String("file", "", "Path to html file")
-	dirPath := flag.String("dir", "", "Path to dir containing html files")
+	filePath := flag.String("file", "", "Path to md file")
+	dirPath := flag.String("dir", "", "Path to dir containing md files")
 	flag.Parse()
 
 	// Checks Values Of Flags
@@ -47,21 +50,15 @@ func main() {
 	}
 
 	start := time.Now()
+	os.Mkdir("Generated/", 0755)
 	for _, filePath := range filePaths {
-
-		fileStat, _ := os.Stat(filePath)
-		totalSize += fileStat.Size()
-
 		fileName := strings.Split(
-			strings.Split(filePath, "/")[len(strings.Split(filePath, "/"))-1], ".")[0]
+			strings.Split(filePath, "/")[len(strings.Split(filePath, "/"))-1], ".")
+		if fileName[1] == "md" {
+			file, _ := ioutil.ReadFile(filePath)
+			createFile(fileName[0]+".html", file)
+		}
 
-		file, _ := ioutil.ReadFile(filePath)
-		fileSplit := strings.Split(string(file), "\n")
-
-		title := fileSplit[0]
-		content := strings.Join(fileSplit[1:], "\n")
-
-		createFileFromTemplate(fileName+".html", Post{title, content})
 	}
 	elapsed := time.Since(start)
 
@@ -69,13 +66,16 @@ func main() {
 		len(filePaths), float64(totalSize)*float64(0.001), elapsed.Seconds())
 }
 
-func createFileFromTemplate(name string, post Post) {
+func createFile(name string, file []byte) {
+
+	unsafe := blackfriday.Run(file)
+	html := bluemonday.UGCPolicy().SanitizeBytes(unsafe)
 	f, _ := os.Create(name)
-	t := template.Must(template.New("template.tmpl").ParseFiles("template.tmpl"))
-	err := t.Execute(f, post)
-	if err != nil {
-		panic(err)
-	}
+	f.Write(html)
+	fileStat, _ := os.Stat(name)
+	totalSize += fileStat.Size()
+	f.Close()
+	os.Rename(name, "Generated/"+name)
 }
 
 func findFilesInFolder(dirPath string) []string {
